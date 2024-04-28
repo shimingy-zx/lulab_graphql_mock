@@ -2,7 +2,7 @@
  * @Author: 杨仕明 shiming.y@qq.com
  * @Date: 2024-04-26 16:29:25
  * @LastEditors: 杨仕明 shiming.y@qq.com
- * @LastEditTime: 2024-04-28 15:16:35
+ * @LastEditTime: 2024-04-28 17:09:55
  * @FilePath: /lulab_graphql_mock/src/index.ts
  * @Description: 
  * 
@@ -11,77 +11,107 @@
 
 
 
-import { ApolloServer } from '@apollo/server';
-import { startStandaloneServer } from '@apollo/server/standalone';
-import { createServer } from 'node:http'
-import { createYoga } from 'graphql-yoga'
-import { addMocksToSchema } from '@graphql-tools/mock';
-import { makeExecutableSchema } from '@graphql-tools/schema';
+const startApolloServer = require('./servers/apolloServer');
+const startExpressServer = require('./servers/expressServer');
+const startYogaServer = require('./servers/yogaServer');
+
+startApolloServer();
+startExpressServer();
+startYogaServer();
 
 
 
-const typeDefs = `#graphql
-  type Query {
-    hello: String
-    resolved: String
-    user:Person
-  }
 
-  type Person {
-    name: String
-    age: Int
-}
+// const { ApolloServer } = require('@apollo/server');
+// const { startStandaloneServer } = require('@apollo/server/standalone');
+// const { createServer } = require('node:http');
+// const { createYoga } = require('graphql-yoga');
+// const { createHandler } = require('graphql-http/lib/use/express')
+// const { addMocksToSchema } = require('@graphql-tools/mock');
+// const { makeExecutableSchema } = require('@graphql-tools/schema');
+// const express = require('express')
+// const expressPlayground = require('graphql-playground-middleware-express')
+//     .default
 
-`;
 
-const resolvers = {
-    Query: {
-        resolved: () => 'Resolved',
-        hello: () => 'Hello, World!',
-    },
-};
-
-const mocks = {
-    Int: () => 6,
-    Float: () => 22.1,
-    String: () => 'Hello',
-
-    Person: () => ({
-        name: "John",
-        age: () => 3,
-    })
-};
+// const app = express()
 
 
 
-const schema = addMocksToSchema({
-    schema: makeExecutableSchema({ typeDefs, resolvers }),
-    mocks,
-});
+
+// const typeDefs = `#graphql
+//   type Query {
+//     hello: String
+//     resolved: String
+//     user:Person
+//   }
+
+//   type Person {
+//     name: String
+//     age: Int
+// }
+
+// `;
+
+// const resolvers = {
+//     Query: {
+//         resolved: () => 'Resolved',
+//         hello: () => 'Hello, World!',
+//     },
+// };
+
+// const mocks = {
+//     Int: () => 6,
+//     Float: () => 22.1,
+//     String: () => 'Hello',
+
+//     Person: () => ({
+//         name: "John",
+//         age: () => 3,
+//     })
+// };
 
 
 
-const apollo_server = new ApolloServer({
-    schema
-});
-
-const { url } = await startStandaloneServer(apollo_server, { listen: { port: 4000 } });
-
-console.log(`ApolloServer listening at: ${url}`);
+// const schema = addMocksToSchema({
+//     schema: makeExecutableSchema({ typeDefs, resolvers }),
+//     mocks,
+// });
 
 
 
-// Create a Yoga instance with a GraphQL schema.
-const yoga = createYoga({
-    schema
-})
+// const apollo_server = new ApolloServer({
+//     schema
+// });
 
-// Pass it into a server to hook into request handlers.
-const yoga_server = createServer(yoga)
 
-// Start the server and you're done!
-yoga_server.listen(4001, () => {
-    console.info('Yoga_server is running on http://localhost:4001/graphql')
-})
+// const graphql_url = '/graphql'
+
+// app.all(graphql_url, createHandler({ schema }));
+// app.get('/playground', expressPlayground({ endpoint: graphql_url }))
+// app.listen(3000)
+// console.log(`ApolloServer listening at: http://localhost:3000/playground`);
+
+
+// async function startServers() {
+//     const apollo_server = new ApolloServer({ schema });
+//     const { url } = await startStandaloneServer(apollo_server, { listen: { port: 4000 } });
+//     console.log(`ApolloServer listening at: ${url}`);
+// }
+
+// startServers();
+
+
+
+
+// const yoga = createYoga({
+//     schema
+// })
+
+// const yoga_server = createServer(yoga)
+
+// yoga_server.listen(4001, () => {
+//     console.info('Yoga_server is running on http://localhost:4001/graphql')
+// })
 
 
