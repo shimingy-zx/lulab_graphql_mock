@@ -2,7 +2,7 @@
  * @Author: 杨仕明 shiming.y@qq.com
  * @Date: 2024-04-28 16:38:30
  * @LastEditors: 杨仕明 shiming.y@qq.com
- * @LastEditTime: 2024-04-28 17:09:39
+ * @LastEditTime: 2024-04-28 17:42:04
  * @FilePath: /lulab_graphql_mock/src/schema/typeDefs.ts
  * @Description: 
  * 
@@ -10,17 +10,21 @@
  */
 
 
-const typeDefs_v = `#graphql
-  type Query {
-    hello: String
-    resolved: String
-    user: Person
-  }
 
-  type Person {
-    name: String
-    age: Int
-  }
-`;
+module.exports = `#graphql
+type Query {
+  hello: String
+  resolved: String
+  user: Person
+}
 
-module.exports = typeDefs_v;
+type Mutation {
+  hello: String
+}
+
+
+type Person {
+  name: String
+  age: Int
+}
+`;;
