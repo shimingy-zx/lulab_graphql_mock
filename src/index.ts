@@ -2,7 +2,7 @@
  * @Author: 杨仕明 shiming.y@qq.com
  * @Date: 2024-04-26 16:29:25
  * @LastEditors: 杨仕明 shiming.y@qq.com
- * @LastEditTime: 2024-04-28 17:09:55
+ * @LastEditTime: 2024-04-29 18:09:08
  * @FilePath: /lulab_graphql_mock/src/index.ts
  * @Description: 
  * 
@@ -11,107 +11,148 @@
 
 
 
-const startApolloServer = require('./servers/apolloServer');
-const startExpressServer = require('./servers/expressServer');
-const startYogaServer = require('./servers/yogaServer');
+// const startApolloServer = require('./servers/apolloServer');
+// const startExpressServer = require('./servers/expressServer');
+// const startYogaServer = require('./servers/yogaServer');
 
-startApolloServer();
-startExpressServer();
-startYogaServer();
-
-
+// startApolloServer();
+// startExpressServer();
+// startYogaServer();
 
 
-// const { ApolloServer } = require('@apollo/server');
-// const { startStandaloneServer } = require('@apollo/server/standalone');
-// const { createServer } = require('node:http');
-// const { createYoga } = require('graphql-yoga');
-// const { createHandler } = require('graphql-http/lib/use/express')
-// const { addMocksToSchema } = require('@graphql-tools/mock');
-// const { makeExecutableSchema } = require('@graphql-tools/schema');
-// const express = require('express')
-// const expressPlayground = require('graphql-playground-middleware-express')
-//     .default
+const { createServer } = require('node:http');
+const { createSchema, createYoga } = require('graphql-yoga');
+const { useSofa } = require('@graphql-yoga/plugin-sofa');
 
+const books = [
+    { id: 1, title: 'Book A', type: 'AUDIO' },
+    { id: 2, title: 'Book B', type: 'LEGACY' }
+]
+const users = [
+    {
+        id: 1,
+        name: 'User A',
+        favoriteBook: books[0],
+        shelf: books
+    },
+    {
+        id: 2,
+        name: 'User B',
+        favoriteBook: books[1],
+        shelf: books
+    }
+]
 
-// const app = express()
+const UsersCollection = {
+    get(id: string | number) {
+        const uid = typeof id === 'string' ? parseInt(id, 10) : id
 
+        return users.find(u => u.id === uid)
+    },
+    all() {
+        return users
+    }
+}
 
+const BooksCollection = {
+    get(id: string | number) {
+        const bid = typeof id === 'string' ? parseInt(id, 10) : id
 
+        return books.find(u => u.id === bid)
+    },
+    all() {
+        return books
+    },
+    add(title: string) {
+        const book = {
+            id: parseInt(Math.random().toString(10).substr(2), 10),
+            title,
+            type: 'LEGACY'
+        }
 
-// const typeDefs = `#graphql
-//   type Query {
-//     hello: String
-//     resolved: String
-//     user:Person
-//   }
+        books.push(book)
 
-//   type Person {
-//     name: String
-//     age: Int
-// }
+        return book
+    }
+}
 
-// `;
+const schema = createSchema({
+    typeDefs: /* GraphQL */ `
+    type Book {
+      id: ID!
+      title: String!
+      type: BookType!
+    }
+ 
+    enum BookType {
+      AUDIO
+      LEGACY
+    }
+ 
+    type User {
+      id: ID!
+      name: String!
+      favoriteBook: Book!
+      shelf: [Book!]!
+    }
+ 
+    type Query {
+      user(id: ID!): User
+      users: [User!]
+      book(id: ID!): Book
+      books: [Book!]
+    }
+ 
+    type Mutation {
+      addBook(title: String!): Book
+    }
+ 
+    schema {
+      query: Query
+      mutation: Mutation
+    }
+  `,
+    resolvers: {
+        Query: {
+            user(_: any, { id }: any) {
+                return UsersCollection.get(id)
+            },
+            users() {
+                return UsersCollection.all()
+            },
+            book(_: any, { id }: any) {
+                return BooksCollection.get(id)
+            },
+            books() {
+                return BooksCollection.all()
+            }
+        },
+        Mutation: {
+            addBook(_: any, { title }: any) {
+                const book = BooksCollection.add(title)
+                return book
+            }
+        }
+    }
+})
 
-// const resolvers = {
-//     Query: {
-//         resolved: () => 'Resolved',
-//         hello: () => 'Hello, World!',
-//     },
-// };
+const yoga = createYoga({
+    schema,
+    plugins: [
+        useSofa({
+            basePath: '/rest',
+            swaggerUI: {
+                endpoint: '/swagger',
+            },
+            title: 'Example API',
+            version: '1.0.0',
+        })
+    ]
+})
 
-// const mocks = {
-//     Int: () => 6,
-//     Float: () => 22.1,
-//     String: () => 'Hello',
+const server = createServer(yoga)
 
-//     Person: () => ({
-//         name: "John",
-//         age: () => 3,
-//     })
-// };
-
-
-
-// const schema = addMocksToSchema({
-//     schema: makeExecutableSchema({ typeDefs, resolvers }),
-//     mocks,
-// });
-
-
-
-// const apollo_server = new ApolloServer({
-//     schema
-// });
-
-
-// const graphql_url = '/graphql'
-
-// app.all(graphql_url, createHandler({ schema }));
-// app.get('/playground', expressPlayground({ endpoint: graphql_url }))
-// app.listen(3000)
-// console.log(`ApolloServer listening at: http://localhost:3000/playground`);
-
-
-// async function startServers() {
-//     const apollo_server = new ApolloServer({ schema });
-//     const { url } = await startStandaloneServer(apollo_server, { listen: { port: 4000 } });
-//     console.log(`ApolloServer listening at: ${url}`);
-// }
-
-// startServers();
-
-
-
-
-// const yoga = createYoga({
-//     schema
-// })
-
-// const yoga_server = createServer(yoga)
-
-// yoga_server.listen(4001, () => {
-//     console.info('Yoga_server is running on http://localhost:4001/graphql')
-// })
-
+server.listen(4000, () => {
+    console.info('Server is running on http://localhost:4000/graphql')
+})
 
