@@ -2,7 +2,7 @@
  * @Author: 杨仕明 shiming.y@qq.com
  * @Date: 2024-04-28 16:38:30
  * @LastEditors: 杨仕明 shiming.y@qq.com
- * @LastEditTime: 2024-04-28 17:42:04
+ * @LastEditTime: 2024-05-08 21:26:29
  * @FilePath: /lulab_graphql_mock/src/schema/typeDefs.ts
  * @Description: 
  * 
@@ -20,6 +20,7 @@ type Query {
 
 type Mutation {
   hello: String
+  test: String
 }
 
 

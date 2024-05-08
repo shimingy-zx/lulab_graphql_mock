@@ -2,18 +2,20 @@
  * @Author: 杨仕明 shiming.y@qq.com
  * @Date: 2024-04-28 16:40:04
  * @LastEditors: 杨仕明 shiming.y@qq.com
- * @LastEditTime: 2024-04-28 17:45:41
+ * @LastEditTime: 2024-05-08 21:34:54
  * @FilePath: /lulab_graphql_mock/src/mocks/index.ts
  * @Description: 
  * 
  * Copyright (c) 2024 by ${git_name_email}, All Rights Reserved. 
  */
 
+// 参考链接：https://the-guild.dev/graphql/tools/docs/mocking
 
 module.exports = {
     Int: () => 6,
     Float: () => 22.1,
-    String: () => 'Hello',
+    // String: () => 'Hello',
+    test: () => "test",
 
     Person: () => ({
         name: "John",
