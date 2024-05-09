@@ -2,7 +2,7 @@
  * @Author: 杨仕明 shiming.y@qq.com
  * @Date: 2024-04-28 16:40:04
  * @LastEditors: 杨仕明 shiming.y@qq.com
- * @LastEditTime: 2024-05-08 21:35:46
+ * @LastEditTime: 2024-05-09 21:26:22
  * @FilePath: /lulab_graphql_mock/src/schema/schema.ts
  * @Description: 
  * 
@@ -13,8 +13,8 @@ const fs = require('fs');
 const path = require('path');
 const { makeExecutableSchema } = require('@graphql-tools/schema');
 const { addMocksToSchema } = require('@graphql-tools/mock');
-const typeDefs = require('./typeDefs');
-const resolvers = require('./resolvers');
+const typeDefs = require('../mocks/typeDefs');
+const resolvers = require('../resolvers/resolvers');
 const mocks = require('../mocks/index');
 
 
