@@ -2,7 +2,7 @@
  * @Author: 杨仕明 shiming.y@qq.com
  * @Date: 2024-04-28 16:40:04
  * @LastEditors: 杨仕明 shiming.y@qq.com
- * @LastEditTime: 2024-05-08 21:34:54
+ * @LastEditTime: 2024-05-09 21:31:48
  * @FilePath: /lulab_graphql_mock/src/mocks/index.ts
  * @Description: 
  * 
@@ -20,5 +20,11 @@ module.exports = {
     Person: () => ({
         name: "John",
         age: () => 3,
-    })
+    }),
+
+    Test: () => ({
+        test1: "fhduisahfap9uisnj",
+        test2: () => 3,
+        test3: () => 6,
+    }),
 };;

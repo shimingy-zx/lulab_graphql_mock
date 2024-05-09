@@ -10,7 +10,7 @@
  */
 
 
-// 该文件用于业务层获取的数据，不非编辑
+// 该文件用于业务层获取的数据，编辑
 module.exports = {
     Query: {
         hello: () => 'Hello, World!',
